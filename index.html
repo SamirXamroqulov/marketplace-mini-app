@@ -5,13 +5,443 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Marketplace</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f6f6;
+            color: #222;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: white;
+            padding: 18px 16px 12px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .profile {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: none;
+            background: #eee;
+            font-size: 18px;
+        }
+
+        .search {
+            width: 100%;
+            padding: 13px 15px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .search:focus {
+            border-color: #7c3aed;
+        }
+
+        main {
+            padding: 18px 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 13px;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 5px;
+            margin-bottom: 25px;
+        }
+
+        .category {
+            flex: 0 0 auto;
+            padding: 10px 14px;
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .category.active {
+            background: #7c3aed;
+            color: white;
+            border-color: #7c3aed;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .product {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .product-image {
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eee;
+            font-size: 55px;
+        }
+
+        .product-info {
+            padding: 12px;
+        }
+
+        .product-name {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 7px;
+        }
+
+        .price {
+            font-size: 17px;
+            font-weight: 800;
+            color: #7c3aed;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 5px;
+            z-index: 20;
+        }
+
+        .nav-button {
+            background: none;
+            border: none;
+            font-size: 12px;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .nav-button span {
+            display: block;
+            font-size: 22px;
+            margin-bottom: 3px;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px 10px;
+            color: #777;
+            grid-column: 1 / -1;
+        }
+
+        @media (min-width: 700px) {
+            .products {
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+            }
+
+            main,
+            .header {
+                max-width: 900px;
+                margin: auto;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>🛍 Marketplace</h1>
+    <header class="header">
 
-    <p>Mini App ishlayapti!</p>
+        <div class="top">
+            <div class="logo">🛍 Marketplace</div>
+
+            <button class="profile" type="button">
+                👤
+            </button>
+        </div>
+
+        <input
+            id="search"
+            class="search"
+            type="search"
+            placeholder="Mahsulot qidirish..."
+        >
+
+    </header>
+
+
+    <main>
+
+        <h2 class="section-title">Kategoriyalar</h2>
+
+        <div class="categories">
+
+            <button class="category active" data-category="all">
+                Barchasi
+            </button>
+
+            <button class="category" data-category="electronics">
+                📱 Elektronika
+            </button>
+
+            <button class="category" data-category="clothes">
+                👕 Kiyim
+            </button>
+
+            <button class="category" data-category="home">
+                🏠 Uy
+            </button>
+
+            <button class="category" data-category="games">
+                🎮 O‘yinlar
+            </button>
+
+        </div>
+
+
+        <h2 class="section-title">Tavsiya etiladi</h2>
+
+        <div id="products" class="products"></div>
+
+    </main>
+
+
+    <nav class="bottom-nav">
+
+        <button class="nav-button" type="button">
+            <span>🏠</span>
+            Bosh sahifa
+        </button>
+
+        <button class="nav-button" type="button">
+            <span>🛒</span>
+            Savatcha
+        </button>
+
+        <button class="nav-button" type="button">
+            <span>❤️</span>
+            Sevimlilar
+        </button>
+
+        <button class="nav-button" type="button">
+            <span>👤</span>
+            Profil
+        </button>
+
+    </nav>
+
+
+    <script>
+
+        const products = [
+
+            {
+                name: "iPhone 15",
+                price: "9 500 000 so'm",
+                category: "electronics",
+                image: "📱"
+            },
+
+            {
+                name: "AirPods Pro",
+                price: "2 100 000 so'm",
+                category: "electronics",
+                image: "🎧"
+            },
+
+            {
+                name: "Oversize T-shirt",
+                price: "180 000 so'm",
+                category: "clothes",
+                image: "👕"
+            },
+
+            {
+                name: "Gaming Keyboard",
+                price: "450 000 so'm",
+                category: "games",
+                image: "⌨️"
+            },
+
+            {
+                name: "Smart Watch",
+                price: "650 000 so'm",
+                category: "electronics",
+                image: "⌚"
+            },
+
+            {
+                name: "Gaming Mouse",
+                price: "250 000 so'm",
+                category: "games",
+                image: "🖱️"
+            },
+
+            {
+                name: "Uy chirog‘i",
+                price: "120 000 so'm",
+                category: "home",
+                image: "💡"
+            },
+
+            {
+                name: "Ryukzak",
+                price: "300 000 so'm",
+                category: "clothes",
+                image: "🎒"
+            }
+
+        ];
+
+
+        const productsContainer =
+            document.getElementById("products");
+
+        const searchInput =
+            document.getElementById("search");
+
+        const categoryButtons =
+            document.querySelectorAll(".category");
+
+
+        let selectedCategory = "all";
+
+
+        function showProducts() {
+
+            const searchText =
+                searchInput.value.toLowerCase().trim();
+
+
+            const filteredProducts =
+                products.filter(product => {
+
+                    const matchesSearch =
+                        product.name
+                            .toLowerCase()
+                            .includes(searchText);
+
+                    const matchesCategory =
+                        selectedCategory === "all" ||
+                        product.category === selectedCategory;
+
+                    return matchesSearch && matchesCategory;
+
+                });
+
+
+            productsContainer.innerHTML = "";
+
+
+            if (filteredProducts.length === 0) {
+
+                productsContainer.innerHTML = `
+                    <div class="empty">
+                        😔<br><br>
+                        Mahsulot topilmadi
+                    </div>
+                `;
+
+                return;
+            }
+
+
+            filteredProducts.forEach(product => {
+
+                const card =
+                    document.createElement("div");
+
+                card.className = "product";
+
+                card.innerHTML = `
+
+                    <div class="product-image">
+                        ${product.image}
+                    </div>
+
+                    <div class="product-info">
+
+                        <div class="product-name">
+                            ${product.name}
+                        </div>
+
+                        <div class="price">
+                            ${product.price}
+                        </div>
+
+                    </div>
+                `;
+
+                productsContainer.appendChild(card);
+
+            });
+
+        }
+
+
+        searchInput.addEventListener(
+            "input",
+            showProducts
+        );
+
+
+        categoryButtons.forEach(button => {
+
+            button.addEventListener("click", () => {
+
+                categoryButtons.forEach(btn =>
+                    btn.classList.remove("active")
+                );
+
+                button.classList.add("active");
+
+                selectedCategory =
+                    button.dataset.category;
+
+                showProducts();
+
+            });
+
+        });
+
+
+        showProducts();
+
+    </script>
 
 </body>
 </html>
